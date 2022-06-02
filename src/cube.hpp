@@ -8,7 +8,7 @@
 
 #include <fstream>
 
-inline void generateCube(const Color* data, int cube_samples, const std::string& output_file) {
+inline void generateCube(const Color* data, int cube_res, const std::string& output_file) {
     std::ofstream fout;
     fout.open(output_file, std::ofstream::trunc);
     if (!fout.is_open()) {
@@ -16,16 +16,16 @@ inline void generateCube(const Color* data, int cube_samples, const std::string&
     }
     fout << "# Created with LUTools by Oasin Lyu\n# https://github.com/lfod1997\n\n";
     fout << "TITLE " << getBaseName(output_file) << '\n';
-    fout << "LUT_3D_SIZE " << cube_samples << "\n\n";
+    fout << "LUT_3D_SIZE " << cube_res << "\n\n";
 
     // 6-digit fixed precision
     fout.precision(6);
     fout << std::fixed;
 
-    const auto sample_points = sampleSpan(0, 255, cube_samples);
-    for (int b_index = 0; b_index < cube_samples; ++b_index) {
-        for (int g_index = 0; g_index < cube_samples; ++g_index) {
-            for (int r_index = 0; r_index < cube_samples; ++r_index) {
+    const auto sample_points = sampleSpan(0, 255, cube_res);
+    for (int b_index = 0; b_index < cube_res; ++b_index) {
+        for (int g_index = 0; g_index < cube_res; ++g_index) {
+            for (int r_index = 0; r_index < cube_res; ++r_index) {
                 Color rgba {
                     static_cast<unsigned char>(sample_points[r_index]),
                     static_cast<unsigned char>(sample_points[g_index]),
