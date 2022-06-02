@@ -2,9 +2,7 @@
 #include "pathutils.hpp"
 #include "thread_guard.hpp"
 
-#include <memory>
 #include <iostream>
-#include <fstream>
 #include <thread>
 #include <shared_mutex>
 #include <vector>
