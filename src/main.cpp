@@ -1,82 +1,14 @@
-#include "image.hpp"
+#include "cube.hpp"
 #include "pathutils.hpp"
 #include "thread_guard.hpp"
 
-#include <cmath>
 #include <memory>
 #include <iostream>
 #include <fstream>
 #include <thread>
 #include <shared_mutex>
 #include <vector>
-#include <unordered_map>
 #include <utility>
-
-static constexpr size_t LUT_RAW_DATA_SIZE = static_cast<size_t>(256) * 256 * 256;
-
-inline std::pair<int, int> rgbToPosition(Color color, unsigned char axis, bool flip) noexcept {
-    axis += 3;
-    const unsigned char a = axis % 3;
-    const unsigned char h = (axis + 1) % 3;
-    const unsigned char v = (axis - 1) % 3;
-    const unsigned char quot = color[a] / 16;
-    const unsigned char rem = color[a] % 16;
-    return {
-        (rem << 8) + (flip && (color[a] & 1) ? 255 - color[h] : color[h]), // "& 1" is "% 2"
-        (quot << 8) + (flip && (quot & 1) ? 255 - color[v] : color[v])
-    };
-}
-
-inline std::vector<int> sampleSpan(int begin, int end, int samples) {
-    if (samples < 2) {
-        throw std::runtime_error { "too few samples" };
-    }
-    const double step = (end - begin) * (1.0 / (samples - 1));
-
-    std::vector<int> sample_points {};
-    sample_points.reserve(samples);
-    double v = begin;
-    for (int i = 0; i < samples; ++i) {
-        sample_points.push_back(static_cast<int>(std::round(v)));
-        v += step;
-    }
-    return sample_points;
-}
-
-inline void generateCube(const Color* data, int cube_samples, const std::string& output_file) {
-    std::ofstream fout;
-    fout.open(output_file, std::ofstream::trunc);
-    if (!fout.is_open()) {
-        throw std::runtime_error { "unable to create cube file" };
-    }
-    fout << "# Created with LUTools by Oasin Lyu\n# https://github.com/lfod1997\n\n";
-    fout << "TITLE " << getBaseName(output_file) << '\n';
-    fout << "LUT_3D_SIZE " << cube_samples << "\n\n";
-
-    // 6-digit fixed precision
-    fout.precision(6);
-    fout << std::fixed;
-
-    const auto sample_points = sampleSpan(0, 255, cube_samples);
-    for (int b_index = 0; b_index < cube_samples; ++b_index) {
-        for (int g_index = 0; g_index < cube_samples; ++g_index) {
-            for (int r_index = 0; r_index < cube_samples; ++r_index) {
-                Color rgba {
-                    static_cast<unsigned char>(sample_points[r_index]),
-                    static_cast<unsigned char>(sample_points[g_index]),
-                    static_cast<unsigned char>(sample_points[b_index]),
-                    255
-                };
-
-                rgba = data[rgba.getHexRGB()];
-                constexpr double quantization_factor = 1. / 255.;
-                fout << rgba.r * quantization_factor << ' '
-                    << rgba.g * quantization_factor << ' '
-                    << rgba.b * quantization_factor << '\n';
-            }
-        }
-    }
-}
 
 inline void convertMap(const std::string& input_file, const std::string& output_file, int cube_samples = 0) {
     const auto map = std::make_shared<Image>(input_file);
@@ -109,7 +41,7 @@ inline void convertMap(const std::string& input_file, const std::string& output_
                         static_cast<unsigned char>(b),
                         255
                     };
-                    data[rgba.getHexRGB()] = map->at(rgbToPosition(rgba, axis, true));
+                    data[rgba.getHexRGB()] = map->at(rgbToMapPosition(rgba, axis, true));
                 }
             }
         }
@@ -211,8 +143,8 @@ int main(int argc, char** argv) {
     // Initialize thread pool
     std::vector<ThreadGuard<std::thread>> workers {};
     workers.reserve(argc - 2); // We need no more than this capacity
-    std::mutex cout_mutex {};
-    std::mutex cerr_mutex {};
+    std::mutex cout_mutex {}; // Force threads access stdout in order
+    std::mutex cerr_mutex {}; // Force threads access stderr in order
 
     Color* lut = nullptr;
 

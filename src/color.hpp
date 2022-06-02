@@ -5,17 +5,14 @@
 
 #include <type_traits>
 
-struct Color
-{
+struct Color {
     unsigned char r;
     unsigned char g;
     unsigned char b;
     unsigned char a;
 
-    unsigned char operator[](unsigned char channel) const noexcept
-    {
-        switch (channel)
-        {
+    unsigned char operator[](unsigned char channel) const noexcept {
+        switch (channel) {
         case 0:
             return r;
         case 1:
@@ -29,30 +26,25 @@ struct Color
         }
     }
 
-    unsigned int hash() const noexcept
-    {
+    unsigned int hash() const noexcept {
         return *reinterpret_cast<const unsigned int*>(this);
     }
 
-    unsigned int getHexRGB() const noexcept
-    {
+    unsigned int getHexRGB() const noexcept {
         return (r << 16) | (g << 8) | b;
     }
 
-    unsigned int getHexRGBA() const noexcept
-    {
+    unsigned int getHexRGBA() const noexcept {
         return (r << 24) | (g << 16) | (b << 8) | a;
     }
 
-    bool operator==(const Color& other) const noexcept
-    {
+    bool operator==(const Color& other) const noexcept {
         return !(hash() ^ other.hash());
     }
 };
 
 template <>
-struct std::hash<Color>
-{
+struct std::hash<Color> {
     unsigned int operator()(const Color& color) const noexcept { return color.hash(); }
 };
 
