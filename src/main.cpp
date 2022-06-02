@@ -10,7 +10,7 @@
 #include <vector>
 #include <utility>
 
-inline void convertMap(const std::string& input_file, const std::string& output_file, int cube_samples = 0) {
+inline void cacheLUTMap(const std::string& input_file, const std::string& output_file, int cube_samples = 0) {
     const auto map = std::make_shared<Image>(input_file);
     if (map->getWidth() != 4096 && map->getHeight() != 4096) {
         throw std::runtime_error { "LUT map size must be 4096 x 4096" };
@@ -118,7 +118,7 @@ int main(int argc, char** argv) {
                 ++argv;
                 --argc;
             }
-            convertMap(lut_file, raw_file, cube_samples);
+            cacheLUTMap(lut_file, raw_file, cube_samples);
             std::cout << "generated: " << raw_file << std::endl;
             if (cube_samples) {
                 std::cout << "generated: cube file from LUT with resolution " << cube_samples << std::endl;
