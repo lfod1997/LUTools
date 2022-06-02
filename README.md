@@ -13,6 +13,10 @@ Simple commandline tool &amp; header-only library to create, batch-apply and con
 
 In this section I'd prefer to use a more intuitive language to explain the usage :D
 
+### Get
+
+Go to the [release page](https://github.com/lfod1997/LUTools/releases) and grab the latest release, it contains the stuff you'll need to perform the following missions.
+
 ### Rip or make filters
 
 You'll need to use your filter to process a specially designed image, [the lutmap](img/lutmap4096.png):
