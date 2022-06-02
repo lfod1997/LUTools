@@ -6,6 +6,8 @@
 #include <type_traits>
 #include <stdexcept>
 
+namespace LutoolsCli {
+
 /// \brief Thread wrapper, ensures its \c join method is called on destruction
 /// \tparam ThreadTy Any class that satisfies the Joinable traits, generally \c std::thread
 template <typename ThreadTy>
@@ -41,5 +43,6 @@ public:
         _th.join();
     }
 };
+}
 
 #endif // _THREAD_GUARD_HPP_

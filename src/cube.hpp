@@ -8,6 +8,8 @@
 
 #include <fstream>
 
+namespace Lutools {
+
 /// \brief Cube file (.cube) exporter
 /// \param data LUT data cache, generally returned by \c cacheLUTMap or \c loadCacheFromFile
 /// \param cube_res The desired LUT resolution, should be greater than 1, of course
@@ -19,7 +21,7 @@ inline void generateCube(const Color* data, int cube_res, const std::string& out
         throw std::runtime_error { "unable to create cube file" };
     }
     fout << "# Created with LUTools by Oasin Lyu\n# https://github.com/lfod1997\n\n";
-    fout << "TITLE " << getBaseName(output_file) << '\n';
+    fout << "TITLE " << Pathutils::getBaseName(output_file) << '\n';
     fout << "LUT_3D_SIZE " << cube_res << "\n\n";
 
     // 6-digit fixed precision
@@ -45,6 +47,7 @@ inline void generateCube(const Color* data, int cube_res, const std::string& out
             }
         }
     }
+}
 }
 
 #endif // _CUBE_HPP_

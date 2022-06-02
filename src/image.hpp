@@ -13,6 +13,8 @@
 #include <stb_image.h>
 #include <stb_image_write.h>
 
+namespace Lutools {
+
 /// \brief Wrapper class of \c stb_image facilities
 class Image {
 protected:
@@ -146,7 +148,7 @@ public:
     /// \brief Saves the image file
     /// \param path Path of the image file created / \b overwritten
     void save(const char* path) const {
-        const std::string ext = getExtensionName(path);
+        const std::string ext = Pathutils::getExtensionName(path);
         bool bad_flag = false;
 
         if (ext == "png") {
@@ -174,5 +176,6 @@ public:
         save(path.c_str());
     }
 };
+}
 
 #endif // _IMAGE_HPP_

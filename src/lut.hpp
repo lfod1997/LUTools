@@ -9,6 +9,8 @@
 #include <vector>
 #include <utility>
 
+namespace Lutools {
+
 inline static constexpr size_t LUT_RAW_DATA_SIZE = static_cast<size_t>(256) * 256 * 256;
 
 /// \brief Map a specific color to a unique 2D position, which maps to a pixel on the lutmap
@@ -60,7 +62,7 @@ inline Color* cacheLUTMap(const std::string& input_file, const std::string& outp
     if (map->getWidth() != 4096 && map->getHeight() != 4096) {
         throw std::runtime_error { "LUT map size must be 4096 x 4096" };
     }
-    const std::string axis_annot = getSecondaryExtensionName(input_file);
+    const std::string axis_annot = Pathutils::getSecondaryExtensionName(input_file);
 
     // Default axis is B (put most quantization loss on B -- the least noticeable light component for the eye)
     unsigned char axis = 2;
@@ -141,6 +143,7 @@ inline Color* loadCacheFromFile(const std::string& path) {
         throw;
     }
     return data;
+}
 }
 
 #endif // _LUT_HPP_

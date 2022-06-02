@@ -10,6 +10,10 @@
 
 /// \brief LUTools the commandline tool, also serves as a demonstration of usage
 int main(int argc, char** argv) {
+    using namespace Lutools;
+    using namespace LutoolsCli;
+    using namespace Pathutils;
+
     if (argc < 2) {
         std::cout << "usage: " << getBaseName(argv[0]) << " {LUT | LUT_MAP} [-cube [RESOLUTION]] [INPUT [-OUTPUT]]..." << std::endl;
         return 0;

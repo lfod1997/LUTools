@@ -8,6 +8,8 @@
 #include <string>
 #include <algorithm>
 
+namespace Pathutils {
+
 /// \brief Returns the directory component of \c path
 inline std::string getDirectory(const std::string& path) {
     const auto where_slash = path.find_last_of("/\\");
@@ -57,6 +59,7 @@ inline std::string getSecondaryExtensionName(const std::string& path, bool to_lo
 /// \brief Checks if a file exists and is available for the current thread
 inline bool isFileAvailable(const std::string& path) {
     return std::ifstream { path }.good();
+}
 }
 
 #endif // _PATHUTILS_HPP_

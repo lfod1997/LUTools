@@ -5,7 +5,12 @@
 
 #include <type_traits>
 
+namespace Lutools {
+
 /// \brief POD class of a specific RGBA color
+/// \example
+/// To construct, simply use the uniform Initialization syntax:
+///     \code Color { 69, 69, 118, 255 }; \endcode
 struct Color {
     /// \brief 8-bit quantized value on the R channel
     unsigned char r;
@@ -54,10 +59,11 @@ struct Color {
         return !(hash() ^ other.hash());
     }
 };
+}
 
 template <>
-struct std::hash<Color> {
-    unsigned int operator()(const Color& color) const noexcept { return color.hash(); }
+struct std::hash<Lutools::Color> {
+    unsigned int operator()(const Lutools::Color& color) const noexcept { return color.hash(); }
 };
 
 #endif // _COLOR_HPP_
