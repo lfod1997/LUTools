@@ -9,8 +9,13 @@
 #include <vector>
 #include <utility>
 
-inline constexpr size_t LUT_RAW_DATA_SIZE = static_cast<size_t>(256) * 256 * 256;
+inline static constexpr size_t LUT_RAW_DATA_SIZE = static_cast<size_t>(256) * 256 * 256;
 
+/// \brief Map a specific color to a unique 2D position, which maps to a pixel on the lutmap
+/// \param color The color
+/// \param axis Axis channel, whose value enumerates, tile by tile, throughout the entire lutmap: 0 for R, 1 for G, 2 for B
+/// \param flip Whether or not the tile "flipping" (used to lower the spatial frequency and thereby reduce JPEG noise) are taken into consideration
+/// \return a \c std::pair of two integers, x (horizontal pixel index) and y (vertical pixel index)
 inline std::pair<int, int> rgbToMapPosition(Color color, unsigned char axis, bool flip) noexcept {
     axis += 3;
     const unsigned char a = axis % 3;
@@ -24,6 +29,11 @@ inline std::pair<int, int> rgbToMapPosition(Color color, unsigned char axis, boo
     };
 }
 
+/// \brief Returns a given number of integer sample points evenly distributed through a given span
+/// \param begin The begin point of the span
+/// \param end The end point of the span
+/// \param samples How many elements are desired in the return value
+/// \return A \c std::vector , allocated \b on-stack, of \c samples integers, evenly distributed through the span [begin, end], in which \c begin and \c end are always included
 inline std::vector<int> sampleSpan(int begin, int end, int samples) {
     if (samples < 2) {
         throw std::runtime_error { "too few samples" };
@@ -40,7 +50,11 @@ inline std::vector<int> sampleSpan(int begin, int end, int samples) {
     return sample_points;
 }
 
-/// \remark Ensures a valid array of Color
+/// \brief Analyzes a lutmap and cache the entire LUT, interpolation-free
+/// \param input_file Path of the lutmap
+/// \param output_file Path of the output (.lut format); writing is skipped if empty
+/// \return An array of \c Color which stores the mapped value of all possible colors in the RGB colorspace; the mapped value can be accessed via index returned by \c Color::getHexRGB()
+/// \remark Ensures a valid array of \c Color
 inline Color* cacheLUTMap(const std::string& input_file, const std::string& output_file) {
     const auto map = std::make_shared<Image>(input_file);
     if (map->getWidth() != 4096 && map->getHeight() != 4096) {
@@ -97,7 +111,10 @@ inline Color* cacheLUTMap(const std::string& input_file, const std::string& outp
     return data;
 }
 
-/// \remark Ensures a valid array of Color
+/// \brief Loads a LUT cache into memory
+/// \param path Path of the input (.lut format)
+/// \return An array of \c Color which stores the mapped value of all possible colors in the RGB colorspace; the mapped value can be accessed via index returned by \c Color::getHexRGB()
+/// \remark Ensures a valid array of \c Color
 inline Color* loadCacheFromFile(const std::string& path) {
     Color* data = nullptr;
 

@@ -8,6 +8,7 @@
 #include <vector>
 #include <utility>
 
+/// \brief LUTools the commandline tool, also serves as a demonstration of usage
 int main(int argc, char** argv) {
     if (argc < 2) {
         std::cout << "usage: " << getBaseName(argv[0]) << " {LUT | LUT_MAP} [-cube [RESOLUTION]] [INPUT [-OUTPUT]]..." << std::endl;

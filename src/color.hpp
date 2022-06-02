@@ -5,12 +5,18 @@
 
 #include <type_traits>
 
+/// \brief POD class of a specific RGBA color
 struct Color {
+    /// \brief 8-bit quantized value on the R channel
     unsigned char r;
+    /// \brief 8-bit quantized value on the G channel
     unsigned char g;
+    /// \brief 8-bit quantized value on the B channel
     unsigned char b;
+    /// \brief 8-bit quantized value on the Alpha channel
     unsigned char a;
 
+    /// \brief Returns the value on a specific channel
     unsigned char operator[](unsigned char channel) const noexcept {
         switch (channel) {
         case 0:
@@ -26,18 +32,24 @@ struct Color {
         }
     }
 
+    /// \brief Fast hasher, can be used as the key for indexing
+    /// \return Implementation defined \c unsigned
+    /// \note DO NOT use this to get the human-readable hashcode, use \c Color::getHexRGBA() or \c Color::getHexRGB() instead
     unsigned int hash() const noexcept {
         return *reinterpret_cast<const unsigned int*>(this);
     }
 
+    /// \brief Returns the RGB hashcode value of the color, like the one you'll get from e.g. Photoshop, but numeric
     unsigned int getHexRGB() const noexcept {
         return (r << 16) | (g << 8) | b;
     }
 
+    /// \brief Returns the RGBA hashcode value of the color, like the one you'll get from e.g. Photoshop, but numeric
     unsigned int getHexRGBA() const noexcept {
         return (r << 24) | (g << 16) | (b << 8) | a;
     }
 
+    /// \brief Fast comparison based on \c Color::hash()
     bool operator==(const Color& other) const noexcept {
         return !(hash() ^ other.hash());
     }

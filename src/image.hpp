@@ -13,6 +13,7 @@
 #include <stb_image.h>
 #include <stb_image_write.h>
 
+/// \brief Wrapper class of \c stb_image facilities
 class Image {
 protected:
     int _w = 0;
@@ -76,16 +77,25 @@ public:
         }
     }
 
+    /// \brief Returns the width of the image
     int getWidth() const noexcept { return _w; }
+    /// \brief Returns the height of the image
     int getHeight() const noexcept { return _h; }
+    /// \brief Returns the bit depth of the image, i.e. 8 x the number of channels
     int getFileBitDepth() const noexcept { return _file_channels * 8; }
+    /// \brief Returns the total number of pixels on the image
     std::size_t getTotalPixels() const noexcept { return _w * _h; } // NOLINT(*)
 
+    /// \brief Pixel-wise iterator \c begin
     Color* begin() noexcept { return _begin; }
+    /// \brief Pixel-wise const iterator \c begin
     const Color* begin() const noexcept { return _begin; }
+    /// \brief Pixel-wise iterator \c end
     Color* end() noexcept { return _end; }
+    /// \brief Pixel-wise const iterator \c end
     const Color* end() const noexcept { return _end; }
 
+    /// \brief Returns the RGBA color of the pixel at the given position
     Color& at(ptrdiff_t x, ptrdiff_t y) {
         if (x >= _w) { x = _w - 1; }
         if (x < 0) { x = 0; }
@@ -96,32 +106,45 @@ public:
         return *reinterpret_cast<Color*>(p);
     }
 
+    /// \brief Returns the RGBA color of the pixel at the given position
     const Color& at(ptrdiff_t x, ptrdiff_t y) const { return const_cast<Image*>(this)->at(x, y); }
 
+    /// \brief Returns the RGBA color of the pixel at the given position
+    /// \param xy A \c std::pair of x (horizontal pixel index) and y (vertical pixel index)
     template <typename IntTy>
     Color& at(const std::pair<IntTy, IntTy>& xy) {
         return at(static_cast<ptrdiff_t>(xy.first), static_cast<ptrdiff_t>(xy.second));
     }
 
+    /// \brief Returns the RGBA color of the pixel at the given position
+    /// \param xy A \c std::pair of x (horizontal pixel index) and y (vertical pixel index)
     template <typename IntTy>
     const Color& at(const std::pair<IntTy, IntTy>& xy) const {
         return at(static_cast<ptrdiff_t>(xy.first), static_cast<ptrdiff_t>(xy.second));
     }
 
+    /// \brief Returns the RGBA color of the pixel at the given position
     Color& operator()(ptrdiff_t x, ptrdiff_t y) { return at(x, y); }
 
+    /// \brief Returns the RGBA color of the pixel at the given position
     const Color& operator()(ptrdiff_t x, ptrdiff_t y) const { return at(x, y); }
 
+    /// \brief Returns the RGBA color of the pixel at the given position
+    /// \param xy A \c std::pair of x (horizontal pixel index) and y (vertical pixel index)
     template <typename IntTy>
     Color& operator()(const std::pair<IntTy, IntTy>& xy) {
         return at(static_cast<ptrdiff_t>(xy.first), static_cast<ptrdiff_t>(xy.second));
     }
 
+    /// \brief Returns the RGBA color of the pixel at the given position
+    /// \param xy A \c std::pair of x (horizontal pixel index) and y (vertical pixel index)
     template <typename IntTy>
     const Color& operator()(const std::pair<IntTy, IntTy>& xy) const {
         return at(static_cast<ptrdiff_t>(xy.first), static_cast<ptrdiff_t>(xy.second));
     }
 
+    /// \brief Saves the image file
+    /// \param path Path of the image file created / \b overwritten
     void save(const char* path) const {
         const std::string ext = getExtensionName(path);
         bool bad_flag = false;
@@ -145,6 +168,8 @@ public:
         }
     }
 
+    /// \brief Saves the image file
+    /// \param path Path of the image file created / \b overwritten
     void save(const std::string& path) const {
         save(path.c_str());
     }

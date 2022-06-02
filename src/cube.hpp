@@ -8,6 +8,10 @@
 
 #include <fstream>
 
+/// \brief Cube file (.cube) exporter
+/// \param data LUT data cache, generally returned by \c cacheLUTMap or \c loadCacheFromFile
+/// \param cube_res The desired LUT resolution, should be greater than 1, of course
+/// \param output_file Path of the output
 inline void generateCube(const Color* data, int cube_res, const std::string& output_file) {
     std::ofstream fout;
     fout.open(output_file, std::ofstream::trunc);
