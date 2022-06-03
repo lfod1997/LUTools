@@ -57,7 +57,7 @@ inline std::vector<int> sampleSpan(int begin, int end, int samples) {
 /// \param output_file Path of the output (.lut format); writing is skipped if empty
 /// \return An array of \c Color which stores the mapped value of all possible colors in the RGB colorspace; the mapped value can be accessed via index returned by \c Color::getHexRGB()
 /// \remark Ensures a valid array of \c Color
-inline Color* cacheLUTMap(const std::string& input_file, const std::string& output_file) {
+[[nodiscard]] inline Color* cacheLUTMap(const std::string& input_file, const std::string& output_file) {
     const auto map = std::make_shared<Image>(input_file);
     if (map->getWidth() != 4096 && map->getHeight() != 4096) {
         throw std::runtime_error { "LUT map size must be 4096 x 4096" };
@@ -117,7 +117,7 @@ inline Color* cacheLUTMap(const std::string& input_file, const std::string& outp
 /// \param path Path of the input (.lut format)
 /// \return An array of \c Color which stores the mapped value of all possible colors in the RGB colorspace; the mapped value can be accessed via index returned by \c Color::getHexRGB()
 /// \remark Ensures a valid array of \c Color
-inline Color* loadCacheFromFile(const std::string& path) {
+[[nodiscard]] inline Color* loadCacheFromFile(const std::string& path) {
     Color* data = nullptr;
 
     try // Touching pile memory in this block
