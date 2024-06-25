@@ -11,7 +11,7 @@ Simple commandline tool &amp; header-only library to create, batch-apply and con
 
 ## Using the commandline tool
 
-In this section I'd prefer to use a more intuitive language to explain the usage :D
+In this section I'd prefer to use a more intuitive language to explain the usage as the tool is initially made for my artist friends :D
 
 ### Get
 
@@ -69,11 +69,39 @@ Well, forgive me that this must be done via the terminal. But I promise it will 
 
 ### Clone
 
-Use this: `git clone --recurse-submodules git@github.com:lfod1997/LUTools.git`
+```shell
+git clone --recurse-submodules git@github.com:lfod1997/LUTools.git
+```
 
 ### Build
 
-It is a CMake Project with only one target so just config and make it.
+It is a CMake Project with only one target so just configure and make it.
+
+### Develop
+
+Usually, you'll need to configure the CMake project in order to generate the `compile_commands.json` that Clangd requires:
+
+- Windows (MinGW or any variant):
+
+    ```bat
+    mkdir build
+    cd build
+    cmake -G "MinGW Makefiles" -D CMAKE_EXPORT_COMPILE_COMMANDS=ON ..
+    ```
+    
+- Windows (MSVC):
+
+    Using the MSVC toolchain with Clangd requires additional tooling, [follow this guide](https://clang.llvm.org/docs/HowToSetupToolingForLLVM.html#setup-clang-tooling-using-cmake-on-windows); or I'd rather recommend using Visual Studio with CMake support.
+    
+- Linux / macOS (GCC):
+
+    ```bash
+    mkdir build
+    cd build
+    cmake -D CMAKE_EXPORT_COMPILE_COMMANDS=ON ..
+    ```
+
+> It's okay for both platforms that the `compile_commands.json` is generated at `build/` instead of `src/` because [clangd will try various paths](https://clangd.llvm.org/installation#project-setup) and we have a flat project structure.
 
 ### LUTools CLI
 
